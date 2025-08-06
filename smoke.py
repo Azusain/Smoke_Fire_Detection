@@ -17,7 +17,7 @@ class SmokeFileDetector():
         parser.add_argument('--classes', nargs='+', type=int, help='filter by class: --class 0, or --class 0 2 3')
         parser.add_argument('--agnostic-nms', action='store_true', help='class-agnostic NMS')
         parser.add_argument('--augment', action='store_true', help='augmented inference')
-        self.opt = parser.parse_args()
+        self.opt, unknown = parser.parse_known_args()
 
         # device = 'cpu' or '0' or '0,1,2,3'
         # TODO: refactor with main.py
