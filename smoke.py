@@ -1,5 +1,4 @@
 import argparse
-import cv2
 from models.experimental import *
 from utils.datasets import *
 from utils.general import *
