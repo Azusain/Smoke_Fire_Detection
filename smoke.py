@@ -25,7 +25,7 @@ class SmokeFileDetector():
 
         # Initialize
         self.half = self.device.type != 'cpu'  # half precision only supported on CUDA   
-
+        logger.info(f"device: {self.device.type}")
         # Load models
         self.model = attempt_load(self.opt.weights, map_location=self.device)
         self.imgsz = check_img_size(self.opt.img_size, s=self.model.stride.max())
