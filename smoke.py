@@ -1,10 +1,12 @@
 import argparse
+
+from loguru import logger
 from models.experimental import *
 from utils.datasets import *
 from utils.general import *
 
 class SmokeFileDetector():
-    def __init__(self,model, device='cpu'):
+    def __init__(self,model):
         parser = argparse.ArgumentParser()
         parser.add_argument('--weights', nargs='+', type=str, default=model, help='model.pt path(s)')
         parser.add_argument('--source', type=str, default='inference/images', help='source')  # file/folder, 0 for webcam
@@ -18,7 +20,8 @@ class SmokeFileDetector():
         self.opt = parser.parse_args()
 
         # device = 'cpu' or '0' or '0,1,2,3'
-        self.device = torch.device('cpu' if device=='cpu' else f'cuda:{device}')
+        # TODO: refactor with main.py
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         # Initialize
         self.half = self.device.type != 'cpu'  # half precision only supported on CUDA   
@@ -78,15 +81,18 @@ class SmokeFileDetector():
                     top = y_min / img_h
                     width = box_w / img_w
                     height = box_h / img_h
+                    # TODO: integrate with service status.
+                    logger.success(f"SUCCESS - score: {float(conf)}")
                     results.append({
                         "score": float(conf),
                         "location": {
-                            "left": left,
-                            "top": top,
-                            "width": width,
-                            "height": height
+                            "left": float(left),
+                            "top": float(top),
+                            "width": float(width),
+                            "height": float(height)
                         },
                         "label": names[int(cls)],
                     })
+
             batch_results.append(results)
         return batch_results 
